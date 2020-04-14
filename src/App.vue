@@ -133,12 +133,11 @@ export default {
         })
 
       if(this.modal) {
-        let promise = new Promise(() => {
+        new Promise(() => {
             setTimeout(() => {
                 this.loginMode = 1
             }, 1000)
         });
-        console.log(promise)
       }
     },
     playTune() {
@@ -173,16 +172,14 @@ export default {
     },
     created(){
       this.modal = true
-      let promise = new Promise(() => {
+      new Promise(() => {
             setTimeout(() => {
                 this.slide = true
             }, 400)
         });
-        console.log(promise)
       firestore.collection("Users").get().then(snapshot => {
 
               snapshot.forEach(doc => {
-                console.log("Johhny Mose: ", doc.id )
                 this.usersCollection[doc.id] = doc.data()
               });
 

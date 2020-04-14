@@ -174,7 +174,6 @@ export default {
                 arr.push(obj)
             })
             arr.sort((a, b) => (a.score > b.score) ? -1 : 1)
-            console.log(arr)
             this.usersSorted = arr
         },
     },
