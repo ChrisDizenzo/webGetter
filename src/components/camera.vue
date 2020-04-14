@@ -116,6 +116,7 @@ export default {
             prevWidth: 0,
             prevXpos: 0,
             prevYpos: 0,
+            prevFistMode: false,
 
             numLeft: 5,
 
@@ -137,6 +138,8 @@ export default {
             fistMode: false,
 
             addedPulse: false,
+            canPress: true, 
+            
         }
     },
     methods: {
@@ -224,63 +227,76 @@ export default {
         setAddedPulse(val){
             this.addedPulse = val
         },
+        setcanPress(val){
+            this.canPress = val
+        },
         buttonPressed(){
-
-            this.playPositiveSound();
-
+            if (this.canPress == false){
+                return
+            }
+            
+            this.canPress = false;
+            new Promise(() => {
+                setTimeout(() => {
+                    this.setcanPress(true)
+                }, 400)
+            });
             
             if(this.showImage) {
+                // Send to database
+                this.pushImage()
+                //Increment whichever mode you're in
+                if(this.prevFistMode) this.fistCount++
+                else this.handCount++
+                this.numLeft = this.numLeft - 1
+
+                //Play the sound
+                this.playPositiveSound();
                 // Animation handling
                 this.addedPulse = true;
                 new Promise(() => {
                     setTimeout(() => {
                         this.setAddedPulse(false)
-                        
-                        
                     }, 400)
                 });
-                //Increment whichever mode you're in
-                if(this.fistMode) this.fistCount++
-                else this.handCount++
-                this.numLeft = this.numLeft - 1
-
-                // Send to database
-                this.pushImage()
-
-                this.drawTheRect("overlaiTwo", this.xpos, this.ypos, this.height, this.width, this.fistMode)
-
-                if (this.numLeft==0) {
-                    this.swtichFist(!this.fistMode)
-                    this.numLeft = 5
-                }
-
-                
-
-                this.scale = Math.random()*0.4 + 0.8
-                this.height = this.scale*130;
-                this.width = this.scale*100
-                this.xpos = (this.canvasWidth - this.width)*Math.random()
-                this.ypos = (this.canvasHeight - this.height)*Math.random()
-                
-                this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width, this.fistMode)
-
-                var canvas = document.getElementById('canvas');
-                var feed = document.getElementById('vid');
-                
-                canvas.width = feed.clientWidth
-                canvas.height = feed.clientHeight
-                // console.log($(".feed").width())
-                const ctx = canvas.getContext("2d");
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = "high";
-                ctx.drawImage(document.querySelector("video"), 0, 0, canvas.width,canvas.height);
-
-                
                 
                 
 
+                
             }
+
+            this.drawTheRect("overlaiTwo", this.xpos, this.ypos, this.height, this.width, this.fistMode)
+            var canvas = document.getElementById('canvas');
+            var feed = document.getElementById('vid');
             
+            canvas.width = feed.clientWidth
+            canvas.height = feed.clientHeight
+            // console.log($(".feed").width())
+            const ctx = canvas.getContext("2d");
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(document.querySelector("video"), 0, 0, canvas.width,canvas.height);
+
+            this.prevFistMode = this.fistMode
+
+            this.prevHeight= this.height
+            this.prevWidth= this.width
+            this.prevXpos= this.xpos
+            this.prevYpos= this.ypos
+
+            this.scale = Math.random()*0.4 + 0.8
+            this.height = this.scale*130;
+            this.width = this.scale*100
+            this.xpos = (this.canvasWidth - this.width)*Math.random()
+            this.ypos = (this.canvasHeight - this.height)*Math.random()
+
+            if (this.numLeft==0) {
+                this.swtichFist(!this.fistMode)
+                this.numLeft = 5
+            }
+
+            this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width, this.fistMode)
+
 
             this.resetDisplay()
             this.showImage = true;
@@ -295,7 +311,7 @@ export default {
             
         },
         pushImage(){
-            // var stor = storage.ref().child("images")
+            // var stor = storage.ref().child("images/" + this.makeid(15))
 
             // var push = {
             //     id: this.id,
@@ -305,11 +321,14 @@ export default {
             //     ypos: this.prevYpos
             // }       
 
-            // var canvas = document.getElementById("overlaiTwo");
+            // var canvas = document.getElementById('canvas');
             // canvas.toBlob((blob) => {
             //     stor.put(blob).then(snapshot =>{
-            //         console.log(snapshot);
-            //         firestore.collection("Images").doc().set(push)
+            //         snapshot.ref.getDownloadURL().then(function(downloadURL) {
+            //             // console.log('File available at', downloadURL);
+            //             push.image = downloadURL
+            //             firestore.collection("Images").doc().set(push)
+            //         });
             //     })
             // })
             // storage.ref().child("images").put()
@@ -348,7 +367,7 @@ export default {
     computed: {
         updateFist: function(){
             let out = []
-            out.push((this.addedPulse && this.fistMode) ? 'pulse' : '')
+            out.push((this.addedPulse && this.prevfistMode) ? 'pulse' : '')
             out.push(!this.fistMode ? 'text-secondary' : ['text-black', 'pulse'])
             
             
@@ -357,7 +376,7 @@ export default {
         },
         updateHand: function(){
             let out = []
-            out.push((this.addedPulse && !this.fistMode) ? 'pulse' : '')
+            out.push((this.addedPulse && !this.prevfistMode) ? 'pulse' : '')
             out.push(this.fistMode ? 'text-secondary' : ['text-black', 'pulse'])
             
             
