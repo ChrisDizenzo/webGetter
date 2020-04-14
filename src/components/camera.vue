@@ -82,8 +82,8 @@
 
 
 <script>
-import firestore from './firebaseInit'
-import storage from './firestorageInit'
+// import firestore from './firebaseInit'
+// import storage from './firestorageInit'
 import highscore from './highscore'
 import 'bootstrap/dist/css/bootstrap.min.css'
 export default {
@@ -239,23 +239,23 @@ export default {
 
         },
         pushImage(){
-            var stor = storage.ref().child("images")
+            // var stor = storage.ref().child("images")
 
-            var push = {
-                id: this.id,
-                height: this.prevHeight,
-                width: this.prevWidth,
-                xpos: this.prevXpos,
-                ypos: this.prevYpos
-            }       
+            // var push = {
+            //     id: this.id,
+            //     height: this.prevHeight,
+            //     width: this.prevWidth,
+            //     xpos: this.prevXpos,
+            //     ypos: this.prevYpos
+            // }       
 
-            var canvas = document.getElementById("overlaiTwo");
-            canvas.toBlob((blob) => {
-                stor.put(blob).then(snapshot =>{
-                    console.log(snapshot);
-                    firestore.collection("Images").doc().set(push)
-                })
-            })
+            // var canvas = document.getElementById("overlaiTwo");
+            // canvas.toBlob((blob) => {
+            //     stor.put(blob).then(snapshot =>{
+            //         console.log(snapshot);
+            //         firestore.collection("Images").doc().set(push)
+            //     })
+            // })
             // storage.ref().child("images").put()
             // firebase.collection("Images").
         },
