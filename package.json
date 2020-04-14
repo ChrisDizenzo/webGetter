@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@firebase/storage": "^0.3.31",
+    "animate.css": "^3.7.2",
     "core-js": "^3.6.4",
     "firebase": "^7.14.0",
     "firebase-tools": "^8.0.2",
