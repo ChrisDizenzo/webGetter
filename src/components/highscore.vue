@@ -1,23 +1,7 @@
 <template>
     <div style="position: absolute; top: 650px; display:flex; flex-direction: column; align-items: stretch; width: 98vw;">
         <div class="name-container" style="display: flex; justify-content: center" @click="printUser">
-        <h1 >Username: <span :class="'text-'+colorBootstrap[current]">{{ userName }}</span></h1> 
-            <div class="" style="margin-left: 100px">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <div v-for="(color,ind) in colorBootstrap" style=" cursor: pointer;" @click="changeInd(ind)" type="button" class="btn" :class="'bg-' + colorBootstrap[ind]" :key="ind">
-                        <div class="circle-holder" style="width: 30px; height:30px" >
-
-                            <svg height="25px"  :style="{fill: (selected==ind || current==ind) ? 'white' : 'transparent'}" viewBox="0 -46 417.81333 417" width="25px" xmlns="http://www.w3.org/2000/svg"><path d="m159.988281 318.582031c-3.988281 4.011719-9.429687 6.25-15.082031 6.25s-11.09375-2.238281-15.082031-6.25l-120.449219-120.46875c-12.5-12.5-12.5-32.769531 0-45.246093l15.082031-15.085938c12.503907-12.5 32.75-12.5 45.25 0l75.199219 75.203125 203.199219-203.203125c12.503906-12.5 32.769531-12.5 45.25 0l15.082031 15.085938c12.5 12.5 12.5 32.765624 0 45.246093zm0 0"/></svg>
-                        </div>
-                        
-                    </div>
-                    
-                </div>
-                <button type="button" class="btn text-white" :class="submitButton" style="margin-left: 5px;  cursor: pointer;">
-                    Submit
-                </button>
-                
-            </div>
+            <h1 >Username: <span :class="'text-'+colorBootstrap[current]">{{ userName }}</span></h1> 
         </div>
         <div class="card" style="margin-top: 25px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: stretch; padding: 25px 150px;">
             <h1>High Scores</h1>
