@@ -77,16 +77,8 @@
         </div>
         <highscore :userName="userName" :current="selected" :usersCollection="usersCollection"/>
     </div>
- </template>
+</template>
 
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="/__/firebase/7.14.0/firebase-app.js"></script>
-
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-
-<!-- Initialize Firebase -->
-<script src="/__/firebase/init.js"></script>
 
 
 <script>
@@ -137,13 +129,35 @@ export default {
                     const videoPlayer = document.querySelector("video");
                     videoPlayer.srcObject = stream
                     videoPlayer.play()        
+                    new Promise(() => {
+                        setTimeout(() => {
+                            var feed = document.getElementById('vid');
+                            this.$data.canvasHeight = feed.clientHeight
+                            this.$data.canvasWidth = feed.clientWidth
+                            var feed2 = document.getElementById('display');
+                            this.$data.canvasHeightFull = feed2.clientHeight
+                            var c = document.getElementById("overlai");
+                            
+                            c.height = feed.clientHeight
+                            c.width = feed.clientWidth
+
+                            
+                            this.scale = Math.random()*0.4 + 0.8
+                            this.height = this.scale*130;
+                            this.width = this.scale*100
+                            this.xpos = (this.canvasWidth - this.width)*Math.random()
+                            this.ypos = (this.canvasHeight - this.height)*Math.random()
+
+                            this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width)
+                        }, 1000)
+                    });
                 })
             }
         },
         swtichFist(t){
             this.fistMode = t;
             this.playSwitchSound()
-            let promise = new Promise((resolve, reject) => {
+            let promise = new Promise(() => {
             setTimeout(() => {
                 this.playSwitchSound()
             }, 200)
@@ -186,7 +200,9 @@ export default {
             this.deleteScreen = true;
         },
         buttonPressed(){
-
+            if (this.showImage){
+                this.pushImage()
+            }
             this.playPositiveSound();
 
             if(this.showImage) {
@@ -200,18 +216,8 @@ export default {
             var canvas = document.getElementById('canvas');
             var feed = document.getElementById('vid');
             
-            this.prevHeight = this.height
-            this.prevWidth = this.width
-            this.prevXpos = this.xpos
-            this.prevYpos = this.ypos
 
-            var push = {
-                id: this.$data.id,
-                height: this.$data.height,
-                width: this.$data.width,
-                xpos: this.$data.xpos,
-                ypos: this.$data.ypos
-            }       
+            
             canvas.width = feed.clientWidth
             canvas.height = feed.clientHeight
             // console.log($(".feed").width())
@@ -231,6 +237,27 @@ export default {
             
             this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width)
 
+        },
+        pushImage(){
+            var stor = storage.ref().child("images")
+
+            var push = {
+                id: this.id,
+                height: this.prevHeight,
+                width: this.prevWidth,
+                xpos: this.prevXpos,
+                ypos: this.prevYpos
+            }       
+
+            var canvas = document.getElementById("overlaiTwo");
+            canvas.toBlob((blob) => {
+                stor.put(blob).then(snapshot =>{
+                    console.log(snapshot);
+                    firestore.collection("Images").doc().set(push)
+                })
+            })
+            // storage.ref().child("images").put()
+            // firebase.collection("Images").
         },
         drawTheRect(nam, x, y, h, w) {
             var c = document.getElementById(nam);
@@ -260,28 +287,7 @@ export default {
 
     },
     mounted() {
-        let promise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                var feed = document.getElementById('vid');
-                this.$data.canvasHeight = feed.clientHeight
-                this.$data.canvasWidth = feed.clientWidth
-                var feed2 = document.getElementById('display');
-                this.$data.canvasHeightFull = feed2.clientHeight
-                var c = document.getElementById("overlai");
-                
-                c.height = feed.clientHeight
-                c.width = feed.clientWidth
-
-                
-                this.scale = Math.random()*0.4 + 0.8
-                this.height = this.scale*130;
-                this.width = this.scale*100
-                this.xpos = (this.canvasWidth - this.width)*Math.random()
-                this.ypos = (this.canvasHeight - this.height)*Math.random()
-
-                this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width)
-            }, 1000)
-        });
+        
 
         //this.fistCount = this.fistScore
         //this.handCount = this.openScore
