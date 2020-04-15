@@ -325,7 +325,7 @@ export default {
             }
             
             // Animation handling
-            if(this.showImage)  this.fistAnim = !this.fistMode ? 1 : 2
+            if(this.showImage)  this.fistAnim = !this.prevFistMode ? 1 : 2
             
             
             var canvas = document.getElementById('canvas');
