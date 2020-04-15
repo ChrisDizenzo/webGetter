@@ -1,14 +1,14 @@
 <template>
-    <div style="position: absolute; top: 700px; display:flex; flex-direction: column; align-items: stretch; width: 98vw;">
+    <div style="position: absolute; top: 650px; display:flex; flex-direction: column; align-items: stretch; width: 98vw;">
         <div class="name-container" style="display: flex; justify-content: center" @click="printUser">
             <h1 >Username: <span :class="'text-'+colorBootstrap[current]">{{ userName }}</span></h1> 
         </div>
         <div class="card" style="margin-top: 25px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: stretch; padding: 25px 150px;">
             <h1>High Scores</h1>
             <div style="display: flex; align-items: flex-end;">
-                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].name}}</h1>
-                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[1].name}}</h2>
-                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[2].name}}</h3>
+                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].name : ''}}</h1>
+                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].name : ''}}</h2>
+                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].name : ''}}</h3>
             </div>
             <div style="display: flex; margin-top: -40px; margin-bottom: 15px;">
                 <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; ">
@@ -101,9 +101,9 @@
                 </div>
             </div>
             <div style="display: flex; align-items: flex-start;">
-                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].score}}</h1>
-                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[1].score}}</h2>
-                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[2].score}}</h3>
+                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].fistScore + usersCollection[usersSorted[0].key].openScore : ''}}</h1>
+                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].fistScore + usersCollection[usersSorted[1].key].openScore : ''}}</h2>
+                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].fistScore + usersCollection[usersSorted[2].key].openScore : ''}}</h3>
             </div>
             
                   
@@ -118,7 +118,7 @@
 <script>
 import 'bootstrap/dist/css/bootstrap.min.css'
 export default {
-  name: 'App',
+  name: 'highscore',
   components: {
 
   },
@@ -130,11 +130,11 @@ export default {
         hovered: -1,
         user: '',
 
-        usersSorted: [{name: '', score: 0}, {name: '', score: 0}, {name: '', score: 0}],
+        usersSorted: [{score: -1}, {score: -1}, {score: -1}],
     }
   },
   props: [
-      'userName','current', 'usersCollection'
+      'userName','current', 'usersCollection', 'userID', 'userTotalScore'
   ],
   methods: {
         mouseOver: function(){
@@ -150,14 +150,27 @@ export default {
             console.log(this.userName)
         },
         updateTopThree: function() {
-            let arr = []
+            let arr = [{score: -1},{score: -1},{score: -1}]
+            
             Object.keys(this.usersCollection).forEach((key) => {
-                let obj = {}
-                obj['name'] = this.usersCollection[key].name;
-                obj['score'] = this.usersCollection[key].fistScore + this.usersCollection[key].openScore;
-                arr.push(obj)
+                let tempObj = {key: key, score: this.usersCollection[key].fistScore + this.usersCollection[key].openScore}
+                if(tempObj.score > arr[0].score) {
+                    arr.unshift(tempObj)
+                    arr.pop()
+                } else if(tempObj.score > arr[1].score) {
+                    let holdme = arr[1]
+                    arr[1] = tempObj
+                    arr[2] = holdme
+                } else if(tempObj.score > arr[2].score){ 
+                    arr[2] = tempObj
+                }
+                
             })
-            arr.sort((a, b) => (a.score > b.score) ? -1 : 1)
+            
+            new Promise(() => setTimeout(() => {
+                this.updateTopThree()
+            }, 1000));
+            
             this.usersSorted = arr
         },
     },
@@ -170,6 +183,7 @@ export default {
     },
     mounted: function() {
         this.updateTopThree();
+        
     },
 }
 </script>

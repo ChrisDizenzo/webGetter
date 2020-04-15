@@ -26,12 +26,12 @@
                                     
                                 </div>
                             </div>
-                            <div style="display:flex; align-items:center; justify-content: center">
+                            <!-- <div style="display:flex; align-items:center; justify-content: center">
                                 <h1 class="text-center display-2" style="padding-top: 15px; position: absolute; right: 54%;">{{formattedElapsedTime[0] || '0'}}</h1>
                                 <h1 class="text-center display-4" style="padding-top: 15px;">:</h1>
                                 <h1 class="text-center display-4" style="padding-top: 15px; position: absolute; left: 54%;"> {{formattedElapsedTime[1]}}</h1>
 
-                            </div>
+                            </div> -->
 
                         </div>
                         
@@ -72,7 +72,7 @@
                 
                 <div class="containe animated faster" style="width: 50%; justify-content: center;" :class="canvasAnim">
                     <div class="card containe" style="padding: 20px 50px; flex-direction: column; align-items: center; max-width: 600px">
-                        <div v-if="mainScreen" style="margin-top: auto; margin-bottom: auto">
+                        <div v-if="mainScreen" style="margin-top: auto; margin-bottom: auto; flex-direction: column">
                             <h3 class="text-center" style="margin-bottom: 50px">When you start the game, your images will appear here!</h3>
                             <h5 class="text-center">Get started and you can help us train our data set :)</h5>
                         </div>
@@ -102,26 +102,26 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="showImage" style="display:flex; align-items:center; justify-content: center; margin-top: 50px">
+                        <!-- <div v-if="showImage" style="display:flex; align-items:center; justify-content: center; margin-top: 50px">
                             <h1 class="text-center display-2" style="padding-top: 15px; position: absolute; right: 54%;">{{lastTime.length>3 ? lastTime.substring(0,lastTime.length-3): 0}}</h1>
                             <h1 class="text-center display-4" style="padding-top: 15px;">:</h1>
                             <h1 class="text-center display-4" style="padding-top: 15px; position: absolute; left: 54%;">{{lastTime.length>3 ? lastTime.substring(lastTime.length-3, lastTime.length-1): lastTime.substring(0,2)}}</h1>
 
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 
             </div>
             
         </div>
-        <highscore :userName="userName" :current="selected" :usersCollection="usersCollection"/>
+        <highscore :userName="userName" :current="selected" :usersCollection="usersCollection" :userID="userID" :userTotalScore="fistCount+fistScore + handCount+openScore"/>
     </div>
 </template>
 
 
 
 <script>
-// import firestore from './firebaseInit'
+import firestore from './firebaseInit'
 // import storage from './firestorageInit'
 import highscore from './highscore'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -131,7 +131,7 @@ export default {
     components: {
         highscore
     },
-    props: ['userName', 'selected', 'fistScore', 'openScore', 'usersCollection'],
+    props: ['userName', 'selected', 'fistScore', 'openScore', 'usersCollection', 'userID'],
     data(){
         return {
             id: this.makeid(15),
@@ -239,7 +239,6 @@ export default {
                 return
             } else {
                 if(this.elapsedTime == 0) {
-                    console.log('set interval')
                     this.timer = setInterval(() => {
                         this.elapsedTime += 30;
                     }, 30);
@@ -297,7 +296,6 @@ export default {
             }
             if(this.elapsedTime > 0) {
                 this.lastTime = this.elapsedTime.toString()
-                console.log(this.lastTime)
                 this.elapsedTime = 0
             }
             
@@ -318,7 +316,6 @@ export default {
             if(this.showImage) {
                 // Send to database
                 this.pushImage()
-                //Increment whichever mode you're in
                 
                 
                 
@@ -330,16 +327,13 @@ export default {
             
             var canvas = document.getElementById('canvas');
             var feed = document.getElementById('vid');
-            console.log(feed.clientWidth, feed.clientHeight)
             canvas.width = feed.clientWidth
             canvas.height = feed.clientHeight
             // console.log($(".feed").width())
             const ctx = canvas.getContext("2d");
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = "high";
-            console.log('here')
             ctx.drawImage(document.querySelector("video"), 0, 0, canvas.width,canvas.height);
-            console.log('ia am')
 
             this.prevFistMode = this.fistMode
             this.prevXpos = this.xpos
@@ -373,10 +367,15 @@ export default {
 
             if (this.numLeft==0) {
                 this.switchFist(!this.fistMode)
+                firestore.collection("Users").doc(this.userID).set({
+                    fistScore: this.fistCount+this.fistScore,
+                    openScore: this.handCount+this.openScore,
+                }, {merge: true})
                 this.numLeft = 5
             }
-
+            this.$emit('updateyboi', {fistCount: (this.fistCount+this.fistScore), handCount: this.handCount+this.openScore})
             
+
             this.drawTheRect("overlai", this.xpos, this.ypos, this.height, this.width, this.fistMode)
 
 
@@ -388,9 +387,6 @@ export default {
 
             
 
-        },
-        drawSideImage() {
-            
         },
         pushImage(){
             // var stor = storage.ref().child("images/" + this.makeid(15))
@@ -488,14 +484,12 @@ export default {
     mounted() {
         
         window.addEventListener('keydown', (e) => {
-            console.log(e)
 
             if(e.keyCode == 32 && e.target == document.body) {
                 e.preventDefault();
             }
             else if(e.code == "Delete" && e.target == document.body) {
                 e.preventDefault();
-                console.log('hi')
                 if(!this.deleteScreen)   this.deletePressed()
                 else    this.completeDelete()
             }

@@ -79,7 +79,7 @@
 
     </div>
     
-    <camera v-if="!modal" :userName="userName" :selected="selected" :fistScore="fistScore" :openScore="openScore" :usersCollection="usersCollection"/>
+    <camera v-if="!modal" :userID="userID" :userName="userName" :selected="selected" v-on:updateyboi="updateUsersCollect" :fistScore="fistScore"  :openScore="openScore" :usersCollection="usersCollection"/>
     
   </div>
 </template>
@@ -108,6 +108,8 @@ export default {
       openScore: 0,
       loginMode: 0,
       usersCollection: {},
+
+      userID: null,
     }
   },
   methods: {
@@ -129,6 +131,7 @@ export default {
             this.fistScore = this.usersCollection[key].fistScore
             this.openScore = this.usersCollection[key].openScore
             this.selected = this.usersCollection[key].color
+            this.userID = key
           }
         })
 
@@ -144,16 +147,22 @@ export default {
       var audio = new Audio('http://soundbible.com/mp3/Music_Box-Big_Daddy-1389738694.mp3');
       audio.play();
     },
+    updateUsersCollect(val){
+      this.usersCollection[this.userID].fistScore = val.fistCount
+      this.usersCollection[this.userID].openScore = val.handCount
+    },
     submitNameAndColor() {
       if(this.selected != -1) {
         this.modal = false
         this.playTune()
       }
-      firestore.collection("Users").doc().set({
+      firestore.collection("Users").add({
         name: this.userName,
         fistScore: 0,
         openScore: 0,
         color: this.selected
+      }).then((snapshot) => {
+        this.userID = snapshot.id
       })
     },
     
