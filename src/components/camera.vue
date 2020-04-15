@@ -8,8 +8,14 @@
             <div class="containe" style="align-items:stretch;">
                 <div class="containe" style="width: 50%; justify-content: center">
                     <div class="camera">
-                        <div id="display" class="card" style="z-index: 1; padding: 20px 50px; display: flex; flex-direction: column">
+                        <div id="display" class="card" style="z-index: 1; padding: 20px 50px; display: flex; flex-direction: column; position: relative">
                             <video autoplay class="feed" id='vid' style="z-index: -1"></video>
+                            <div v-bind:style="{height: canvasHeight + 'px', 'max-width': canvasWidth + 'px'}" style="display: flex; flex-direction: column; justify-content: center; z-index: 300000; align-items:center; position:absolute; width: 100%; height: 100%;">
+                                <div v-show="alertInd>-1" style="position: absolute; " :class="(alertAnim) ? 'fadeOutUp' : ''" class="alert alert-danger animated infinite slow">
+                                    {{alerts[alertInd]}}
+                                </div>
+                            </div>
+                            
                             <div @click="startGame()" style="cursor: pointer;" class="btn" :class="startUp ? 'btn-primary' : 'btn-success'">{{startUp ? 'Go!' : 'Start!'}}</div>
                             <div class="" style="z-index: 30000; position: absolute;">
                                 <div class="overlay" v-bind:style="{height: canvasHeight + 'px', 'max-width': canvasWidth + 'px'}" style="margin-left:auto; margin-right:auto;">
@@ -145,6 +151,11 @@ export default {
             prevYpos: null,
             prevFistMode: null,
 
+            alerts: ['Move your web cam to a new position!', 'Try using your other hand!', 'Use the other side of your hand for a while!', 'Change your sitting position :)'],
+            alertInd: -1,
+            alertAnim: false,
+            alertVal: 0,
+
             numLeft: 5,
 
             startUp: false,
@@ -170,6 +181,7 @@ export default {
             fistModeHold: 1,
 
             canPress: true, 
+            
             
             fistAnim: -1,
             
@@ -247,9 +259,14 @@ export default {
                 
             }
         },
+        playAlertSound() {
+            var audio = new Audio('https://notificationsounds.com/soundfiles/a8849b052492b5106526b2331e526138/file-sounds-1125-insight.mp3');
+            audio.play();
+        },
         playSwitchSound() {
             var audio = new Audio('https://www.freesoundslibrary.com/wp-content/uploads/2018/01/ding-sound-effect.mp3');
             audio.play();
+            
         },
         playPositiveSound() {
             var audio = new Audio('http://soundbible.com/mp3/Air Plane Ding-SoundBible.com-496729130.mp3');
@@ -277,6 +294,19 @@ export default {
             this.playPositiveSound();
             this.resetDisplay()
             this.showImage = true;
+        },
+        doAlert() {
+            this.playAlertSound()
+            this.alertInd = Math.floor(Math.random() * Math.floor(this.alerts.length))
+            new Promise(() => {
+                setTimeout(() => {
+                    this.alertAnim = true
+                    setTimeout(() => {
+                        this.alertAnim = false
+                        this.alertInd = -1
+                    }, 2000)
+                }, 2000)
+            })
         },
         deletePressed() {
             if(this.showImage) {
@@ -364,6 +394,12 @@ export default {
             this.width = this.scale*100
             this.xpos = (this.canvasWidth - this.width)*Math.random()
             this.ypos = (this.canvasHeight - this.height)*Math.random()
+
+            this.alertVal++ 
+            if(this.alertVal == 28) {
+                this.doAlert()
+                this.alertVal = 0
+            }
 
             if (this.numLeft==0) {
                 this.switchFist(!this.fistMode)
@@ -503,6 +539,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 #vid
 {
     transform: rotateY(180deg);

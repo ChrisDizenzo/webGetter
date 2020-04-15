@@ -6,9 +6,9 @@
         <div class="card" style="margin-top: 25px; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; align-items: stretch; padding: 25px 150px;">
             <h1>High Scores</h1>
             <div style="display: flex; align-items: flex-end;">
-                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].name : ''}}</h1>
-                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].name : ''}}</h2>
-                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].name : ''}}</h3>
+                <h1 class="text-center" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].color: 'secondary']" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].name : ''}}</h1>
+                <h2 class="text-center high-score-elem" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].color: 'secondary']" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].name : ''}}</h2>
+                <h3 class="text-center high-score-elem" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].color: 'secondary']" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].name : ''}}</h3>
             </div>
             <div style="display: flex; margin-top: -40px; margin-bottom: 15px;">
                 <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; ">
@@ -101,9 +101,9 @@
                 </div>
             </div>
             <div style="display: flex; align-items: flex-start;">
-                <h1 class="text-center" :class="'text-'+colorBootstrap[1]" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].fistScore + usersCollection[usersSorted[0].key].openScore : ''}}</h1>
-                <h2 class="text-center high-score-elem" :class="'text-'+colorBootstrap[3]" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].fistScore + usersCollection[usersSorted[1].key].openScore : ''}}</h2>
-                <h3 class="text-center high-score-elem" :class="'text-'+colorBootstrap[5]" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].fistScore + usersCollection[usersSorted[2].key].openScore : ''}}</h3>
+                <h1 class="text-center" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].color: 'secondary']" style="width: 250px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[0].key].fistScore + usersCollection[usersSorted[0].key].openScore : ''}}</h1>
+                <h2 class="text-center high-score-elem" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].color: 'secondary']" style="width: 200px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[1].key].fistScore + usersCollection[usersSorted[1].key].openScore : ''}}</h2>
+                <h3 class="text-center high-score-elem" :class="'text-'+ colorBootstrap[usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].color: 'secondary']" style="width: 150px">{{usersSorted[0].score!=-1 ? usersCollection[usersSorted[2].key].fistScore + usersCollection[usersSorted[2].key].openScore : ''}}</h3>
             </div>
             
                   
@@ -129,7 +129,6 @@ export default {
         selected: -1,
         hovered: -1,
         user: '',
-        testData: this.usersCollection,
 
         usersSorted: [{score: -1}, {score: -1}, {score: -1}],
     }
@@ -187,23 +186,12 @@ export default {
         
     },
     watch: {
-        testData: {
-            handler: function(val){
-                console.log("hi ", val)
-            },
-            deep:true
-        },
-        userTotalScore: {
-            handler: function(val){
-                console.log("hiaa ", val)
-            },
-        },
         usersCollection: {
-            handler: function(val){
-                console.log("hieeee ", val)
+            handler: function(){
+                this.updateTopThree()
             },
             deep:true
-        }
+        },
     }
 }
 </script>

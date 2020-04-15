@@ -12,7 +12,17 @@
           </div>
 
           
+          <div v-show="errorType==0" style="margin-top: 15px; margin-bottom: 0px" class="alert alert-danger" role="alert">
+            String is too loooong fam!
+          </div>
 
+          <div v-show="errorType==1" style="margin-top: 15px; margin-bottom: 0px" class="alert alert-danger" role="alert">
+            String is too short fam!
+          </div>
+
+          <div v-show="errorType==2" style="margin-top: 15px; margin-bottom: 0px" class="alert alert-danger" role="alert">
+            String can't have any weird ©#@R@©t3r$!!
+          </div>
 
 
           <div class="btn text-white" @click="submitName" :class="submitCheck" style="margin-top: 15px">
@@ -110,6 +120,7 @@ export default {
       usersCollection: {},
 
       userID: null,
+      errorType: -1,
     }
   },
   methods: {
@@ -119,12 +130,34 @@ export default {
     changeSlide() {
       this.slide = !this.slide
     },
+    strIsValid() {
+      if(this.inputName.length>16) {
+        this.errorType = 0
+        
+      } else if(this.inputName.length < 3) {
+        this.errorType = 1
+      } else {
+        this.inputName.split('').forEach(val => {
+          if (['_', '/', '%', '@', '#', '$', '^', '&', '*', ']', '[', ';', ':', ' '].includes(val)) {
+            this.errorType = 2
+            return
+          } 
+          this.errorType = -1
+          
+        })
+      }
+    },
     submitName() {
+      this.strIsValid()
+
+      if(this.errorType!=-1){
+        return
+      }
       this.userName = this.inputName
       this.inputName = ''
       this.loginMode = 2
        Object.keys(this.usersCollection).forEach(key => {
-          if(this.usersCollection[key].name == this.userName) {
+          if(this.usersCollection[key].name == this.userName.toLowerCase()) {
             this.modal = false
             this.playTune()
             this.fistScore = this.usersCollection[key].fistScore
@@ -147,20 +180,26 @@ export default {
       audio.play();
     },
     updateUsersCollect(val){
+      
       this.$set(this.usersCollection, this.userID, {fistScore: val.fistCount, openScore: val.handCount, color: this.usersCollection[this.userID].color, name: this.usersCollection[this.userID].name});
+      this.usersCollection = Object.assign({}, this.usersCollection)
     },
     submitNameAndColor() {
+      
+
+
       if(this.selected != -1) {
         this.modal = false
         this.playTune()
       }
       firestore.collection("Users").add({
-        name: this.userName,
+        name: this.userName.toLowerCase(),
         fistScore: 0,
         openScore: 0,
         color: this.selected
       }).then((snapshot) => {
         this.userID = snapshot.id
+        this.usersCollection[this.userID] = {name: this.userName.toLowerCase(), fistScore: 0, openScore: 0, color: this.selected}
       })
     },
     
