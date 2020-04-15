@@ -79,8 +79,13 @@
                 <div class="containe animated faster" style="width: 50%; justify-content: center;" :class="canvasAnim">
                     <div class="card containe" style="padding: 20px 50px; flex-direction: column; align-items: center; max-width: 600px">
                         <div v-if="mainScreen" style="margin-top: auto; margin-bottom: auto; flex-direction: column">
-                            <h3 class="text-center" style="margin-bottom: 50px">When you start the game, your images will appear here!</h3>
-                            <h5 class="text-center">Get started and you can help us train our data set :)</h5>
+                            <h4 class="text-center" style="margin-bottom: 20px">Thank you for helping train Chris's Dataset!</h4>
+                            <ul>
+                                <li style="margin: 10px 0px">Remember, the data learns better the more <i class="text-danger">wacky</i> the <b>backgrounds</b> and <b>hand-positions</b> are</li>
+                                <li style="margin: 10px 0px">If you're considering deleting an image, just think yourself "<u>Could a <i>human</i> discern this image?</u>" </li>
+                                <li style="margin: 10px 0px">Press <b class="text-success">Spacebar</b> to start/take an image and <b class="text-danger">Delete</b> to delete!</li>
+                                <li style="margin: 10px 0px">Last but not least <b>make sure there are <u>no other hands</u> in the image!!</b></li>
+                            </ul>
                         </div>
                         <div v-show="showImage" style="display:flex; flex-direction: column; position: relative" v-bind:style="{height: canvasHeight + 'px', 'max-width': canvasWidth + 'px'}">
                             <canvas id="canvas" :height="canvasHeight" :width="canvasWidth"></canvas>
