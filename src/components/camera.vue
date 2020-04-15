@@ -128,7 +128,7 @@
 
 <script>
 import firestore from './firebaseInit'
-// import storage from './firestorageInit'
+import storage from './firestorageInit'
 import highscore from './highscore'
 import 'bootstrap/dist/css/bootstrap.min.css'
 // import { firestore } from 'firebase'
@@ -425,28 +425,29 @@ export default {
 
         },
         pushImage(){
-            // var stor = storage.ref().child("images/" + this.makeid(15))
+            var stor = storage.ref().child("images/" + this.makeid(15))
 
-            // var push = {
-            //     id: this.id,
-            //     height: this.prevHeight,
-            //     width: this.prevWidth,
-            //     xpos: this.prevXpos,
-            //     ypos: this.prevYpos
-            // }       
+            var push = {    
+                id: this.id,
+                name: this.userID,
+                height: this.prevHeight,
+                width: this.prevWidth,
+                xpos: this.prevXpos,
+                ypos: this.prevYpos,
+                label: this.prevFistMode ? 1 : 0,
+                time: this.lastTime
+            }       
 
-            // var canvas = document.getElementById('canvas');
-            // canvas.toBlob((blob) => {
-            //     stor.put(blob).then(snapshot =>{
-            //         snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            //             // console.log('File available at', downloadURL);
-            //             push.image = downloadURL
-            //             firestore.collection("Images").doc().set(push)
-            //         });
-            //     })
-            // })
-            // storage.ref().child("images").put()
-            // firebase.collection("Images").
+            var canvas = document.getElementById('canvas');
+            canvas.toBlob((blob) => {
+                stor.put(blob).then(snapshot =>{
+                    snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        // console.log('File available at', downloadURL);
+                        push.image = downloadURL
+                        firestore.collection("Images").doc().set(push)
+                    });
+                })
+            })
         },
         drawTheRect(nam, x, y, h, w, b) {
             var c = document.getElementById(nam);

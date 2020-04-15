@@ -116,6 +116,7 @@
 </template>
 
 <script>
+// import firestore from './firebaseInit'
 import 'bootstrap/dist/css/bootstrap.min.css'
 export default {
   name: 'highscore',
@@ -147,7 +148,7 @@ export default {
             this.hovered = v;
         },
         printUser: function() {
-            console.log(this.userName)
+            // console.log(this.userName)
         },
         updateTopThree: function() {
             let arr = [{score: -1},{score: -1},{score: -1}]
@@ -170,6 +171,14 @@ export default {
             new Promise(() => setTimeout(() => {
                 this.updateTopThree()
             }, 5000));
+
+            // new Promise(() => setTimeout(() => {
+            //     firestore.collection("Users").get().then(snapshot => {
+            //   snapshot.forEach(doc => {
+            //     this.usersCollection[doc.id] = doc.data()
+            //   });
+            // });
+            // }, 5000));
             
             this.usersSorted = arr
         },
