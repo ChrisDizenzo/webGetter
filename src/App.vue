@@ -123,7 +123,6 @@ export default {
       this.userName = this.inputName
       this.inputName = ''
       this.loginMode = 2
-
        Object.keys(this.usersCollection).forEach(key => {
           if(this.usersCollection[key].name == this.userName) {
             this.modal = false
@@ -148,8 +147,7 @@ export default {
       audio.play();
     },
     updateUsersCollect(val){
-      this.usersCollection[this.userID].fistScore = val.fistCount
-      this.usersCollection[this.userID].openScore = val.handCount
+      this.$set(this.usersCollection, this.userID, {fistScore: val.fistCount, openScore: val.handCount, color: this.usersCollection[this.userID].color, name: this.usersCollection[this.userID].name});
     },
     submitNameAndColor() {
       if(this.selected != -1) {

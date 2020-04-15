@@ -129,6 +129,7 @@ export default {
         selected: -1,
         hovered: -1,
         user: '',
+        testData: this.usersCollection,
 
         usersSorted: [{score: -1}, {score: -1}, {score: -1}],
     }
@@ -169,7 +170,7 @@ export default {
             
             new Promise(() => setTimeout(() => {
                 this.updateTopThree()
-            }, 1000));
+            }, 5000));
             
             this.usersSorted = arr
         },
@@ -185,6 +186,25 @@ export default {
         this.updateTopThree();
         
     },
+    watch: {
+        testData: {
+            handler: function(val){
+                console.log("hi ", val)
+            },
+            deep:true
+        },
+        userTotalScore: {
+            handler: function(val){
+                console.log("hiaa ", val)
+            },
+        },
+        usersCollection: {
+            handler: function(val){
+                console.log("hieeee ", val)
+            },
+            deep:true
+        }
+    }
 }
 </script>
 
