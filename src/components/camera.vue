@@ -1,8 +1,5 @@
  <template>
-    <div class="jazzy" >
-        <div class="container" style="padding:50px;">
-            <h1 style="text-align:center">Chris's Machine Learning Site</h1>
-        </div>
+    <div class="jazzy" style="margin-top: 50px">
         <div class="top-part">
             
             <div class="containe" style="align-items:stretch;">

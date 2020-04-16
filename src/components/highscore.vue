@@ -1,5 +1,5 @@
 <template>
-    <div style="position: absolute; top: 650px; display:flex; flex-direction: column; align-items: stretch; width: 98vw;">
+    <div style="position: absolute; top: 500px; display:flex; flex-direction: column; align-items: stretch; width: 98vw;">
         <div class="name-container" style="display: flex; justify-content: center" @click="printUser">
             <h1 >Username: <span :class="'text-'+colorBootstrap[current]">{{ userName }}</span></h1> 
         </div>

@@ -3,7 +3,7 @@
     <div class="" v-if="modal" style="height: 100vh; width: 100vw; z-index: 50000; position:absolute; display:flex; flex-direction: column; align-items: center; justify-content: center;">
       <div class="card modalboi shadow" :class="slide ? (loginMode==0) ? 'slidee' : ['slidee', 'sizee'] : ''" style="width: 50%; max-width: 600px;position: absolute">
         <div v-show="loginMode==0" style="display: flex; flex-direction: column; padding: 20px 80px 35px 80px;">
-          <h2 class="text-center display-1">Mach-e</h2>
+          <h2 class="text-center display-3">webcamML</h2>
 
           <p class="text-center">Please enter a username below</p>
           
